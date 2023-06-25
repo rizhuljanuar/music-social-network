@@ -15,7 +15,7 @@ const { label, labelColor, input, placeholder, error } = toRefs(props);
 
 const inputComputed = computed({
   get: () => input.value,
-  set: () => emit("update:input", val),
+  set: (val) => emit("update:input", val),
 });
 </script>
 

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\API\AuthRequest;
-use App\Http\Requests\API\LoginRequest;
-use App\Http\Requests\API\LogoutRequest;
+use App\Http\Requests\API\Auth\RegisterRequest;
+use App\Http\Requests\API\Auth\LoginRequest;
+use App\Http\Requests\API\Auth\LogoutRequest;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function register(AuthRequest $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
         try {
 
@@ -36,7 +36,7 @@ class AuthController extends Controller
             return new JsonResponse([
                 'error' => $e->getMessage(),
                 'message' => 'Something went wrong'
-            ]);
+            ], 500);
         }
     }
 

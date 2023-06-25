@@ -1,10 +1,29 @@
 <script setup>
 import { ref } from "vue";
+import axios from "axios";
 import { RouterLink } from "vue-router";
+import { useUserStore } from "../store/user";
 import TextInput from "../components/global/TextInput.vue";
 
+const userStore = useUserStore();
+
+let errors = ref([]);
 let email = ref(null);
 let password = ref(null);
+
+const login = async () => {
+  try {
+    let res = await axios.post("http://localhost:8000/api/login", {
+      email: email.value,
+      password: password.value,
+    });
+
+    console.log(res);
+    userStore.setUserDetails(res);
+  } catch (error) {
+    errors.value = error.response.data.errors;
+  }
+};
 </script>
 
 <template>
@@ -22,7 +41,7 @@ let password = ref(null);
               placeholder="email"
               v-model:input="email"
               inputType="text"
-              error="This is a text error"
+              :error="errors.email ? errors.email[0] : ''"
             />
           </div>
           <div class="mb-4">
@@ -32,14 +51,15 @@ let password = ref(null);
               placeholder="password"
               v-model:input="password"
               inputType="password"
-              error="This is a text error"
+              :error="errors.password ? errors.password[0] : ''"
             />
           </div>
           <button
             class="block w-full bg-green-500 text-white rounded-sm py-3 text-sm tracking-wide"
             type="submit"
+            @click="login"
           >
-            Register
+            Login
           </button>
         </div>
         <p class="text-center text-md text-gray-900">
