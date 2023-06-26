@@ -1,5 +1,8 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useUserStore } from "../../store/user";
+import axios from "axios";
 import TextInput from "../../components/global/TextInput.vue";
 import DisplayCropperButton from "../../components/global/DisplayCropperButton.vue";
 import CropperModal from "../../components/global/CropperModal.vue";
@@ -7,17 +10,60 @@ import TextArea from "../../components/global/TextArea.vue";
 import SubmitFormButton from "../../components/global/SubmitFormButton.vue";
 import CroppedImage from "../../components/global/CroppedImage.vue";
 
+const router = useRouter();
+const userStore = useUserStore();
+console.log(userStore.location);
+
 let firstName = ref(null);
 let lastName = ref(null);
 let location = ref(null);
 let description = ref(null);
 let showModal = ref(false);
-//let imageData = ref(null)
+let imageData = ref(null);
 let image = ref(null);
+let errors = ref([]);
+
+onMounted(() => {
+  firstName.value = userStore.firstName || null;
+  lastName.value = userStore.lastName || null;
+  location.value = userStore.location || null;
+  description.value = userStore.description || null;
+  image.value = userStore.image || null;
+});
 
 const setCroppedImageData = (data) => {
-  //imageData = data;
+  imageData = data;
   image.value = data.imageUrl;
+};
+
+const updateUser = async () => {
+  errors.value = [];
+
+  let data = new FormData();
+
+  data.append("first_name", firstName.value || "");
+  data.append("last_name", lastName.value || "");
+  data.append("location", location.value || "");
+  data.append("description", description.value || "");
+
+  if (imageData) {
+    data.append("image", imageData.file || "");
+    data.append("height", imageData.height || "");
+    data.append("width", imageData.width || "");
+    data.append("left", imageData.left || "");
+    data.append("top", imageData.top || "");
+  }
+
+  try {
+    await axios.post("api/users/" + userStore.id + "?_method=PUT", data);
+
+    await userStore.fetchUser();
+
+    router.push("/account/profile/", userStore.id);
+  } catch (error) {
+    console.log(error);
+    errors.value = error.response.data.errors;
+  }
 };
 </script>
 
@@ -41,7 +87,7 @@ const setCroppedImageData = (data) => {
           placeholder="Rizhul"
           v-model:input="firstName"
           inputType="text"
-          error="This is a test error"
+          :error="errors.first_name ? errors.first_name[0] : ''"
         />
       </div>
       <div class="w-full md:w-1/2 px-3">
@@ -50,7 +96,7 @@ const setCroppedImageData = (data) => {
           placeholder="Januar"
           v-model:input="lastName"
           inputType="text"
-          error="This is a test error"
+          :error="errors.last_name ? errors.last_name[0] : ''"
         />
       </div>
     </div>
@@ -61,7 +107,6 @@ const setCroppedImageData = (data) => {
           placeholder="Jakarta"
           v-model:input="location"
           inputType="text"
-          error="This is a test error"
         />
       </div>
     </div>
@@ -79,19 +124,19 @@ const setCroppedImageData = (data) => {
         <CroppedImage label="Cropped Image" :image="image" />
       </div>
     </div>
+    {{ image }}
     <div class="flex flex-wrap mt-4 mb-6">
       <div class="w-full md:w-1/2 px-3">
         <TextArea
           label="Description"
           placeholder="Please enter some information user"
-          v-model="description"
-          error="This is a test error"
+          v-model:description="description"
         />
       </div>
     </div>
     <div class="flex flex-wrap mt-4 mb-6">
       <div class="w-full px-3">
-        <SubmitFormButton btnText="Update Profile" />
+        <SubmitFormButton btnText="Update Profile" @click="updateUser" />
       </div>
     </div>
   </div>

@@ -13,12 +13,11 @@ let password = ref(null);
 
 const login = async () => {
   try {
-    let res = await axios.post("http://localhost:8000/api/login", {
+    let res = await axios.post("api/login", {
       email: email.value,
       password: password.value,
     });
 
-    console.log(res);
     userStore.setUserDetails(res);
   } catch (error) {
     errors.value = error.response.data.errors;

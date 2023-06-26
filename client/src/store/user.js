@@ -24,15 +24,19 @@ export const useUserStore = defineStore("user", {
     },
 
     async fetchUser() {
-      let res = await axios.get(
-        "http://localhost:8000/api/users" + this.$state.id
-      );
+      let res = await axios.get("api/users/" + this.$state.id);
 
       this.$state.id = res.data.user.id;
       this.$state.firstName = res.data.user.first_name;
       this.$state.lastName = res.data.user.last_name;
       this.$state.location = res.data.user.location;
       this.$state.description = res.data.user.description;
+      if (res.data.user.image) {
+        this.$state.image =
+          process.env.VITE_APP_API_URL + "images/users/" + res.data.user.image;
+      } else {
+        this.$state.image = process.env.VITE_APP_URL + "DefaultUserAvatar.png";
+      }
     },
 
     clearUser() {
