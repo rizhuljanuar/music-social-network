@@ -5,6 +5,10 @@ import ProfileAboutSection from "../../components/partials/profile/ProfileAboutS
 import SongsSection from "../../components/partials/profile/SongsSection.vue";
 import YoutubeVideosSection from "../../components/partials/profile/YoutubeVideosSection.vue";
 import PostsSection from "../../components/partials/profile/PostsSection.vue";
+
+import { useUserStore } from "../../store/user";
+
+const userStore = useUserStore();
 </script>
 
 <template>
@@ -12,7 +16,7 @@ import PostsSection from "../../components/partials/profile/PostsSection.vue";
     <div class="w-1/3">
       <img
         class="w-full rounded-lg h-auto shadow-lg"
-        src="https://via.placeholder.com/500"
+        :src="userStore.image"
         alt="Profile Pic"
       />
     </div>
@@ -20,10 +24,12 @@ import PostsSection from "../../components/partials/profile/PostsSection.vue";
       <div class="flex">
         <div class="w-1/2">
           <h1 class="text-2xl md:text-4xl text-left text-gray-900">
-            Rizhul Januar
+            {{ userStore.firstName }} {{ userStore.lastName }}
           </h1>
           <span class="text-md text-gray-700">
-            <i><b>Jakarta, Indonesia</b></i>
+            <i
+              ><b>{{ userStore.location }}</b></i
+            >
           </span>
         </div>
         <div class="w-1/2 mt-2">

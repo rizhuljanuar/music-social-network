@@ -21,6 +21,12 @@ export const useUserStore = defineStore("user", {
       this.$state.email = res.data.user.email;
       this.$state.location = res.data.user.location;
       this.$state.description = res.data.user.description;
+      if (res.data.user.image) {
+        this.$state.image =
+          process.env.VITE_APP_API_URL + "images/users/" + res.data.user.image;
+      } else {
+        this.$state.image = process.env.VITE_APP_URL + "DefaultUserAvatar.png";
+      }
     },
 
     async fetchUser() {

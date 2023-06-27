@@ -18,18 +18,18 @@
     </div>
     <div class="mt-6"></div>
     <div class="flex justify-between">
-      <router-link
+      <RouterLink
         class="w-full mr-1 py-2 px-4 bg-green-600 text-white text-center font-semibold text-2xl rounded-lg shadow-md hover:bg-green-500 foucus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 cursor-pointer"
         to="login"
       >
         Login
-      </router-link>
-      <router-link
+      </RouterLink>
+      <RouterLink
         class="w-full mr-1 py-2 px-4 bg-blue-600 text-white text-center font-semibold text-2xl rounded-lg shadow-md hover:bg-blue-500 foucus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 cursor-pointer"
         to="register"
       >
         Register
-      </router-link>
+      </RouterLink>
     </div>
   </div>
 

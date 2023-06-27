@@ -61,7 +61,6 @@ const updateUser = async () => {
 
     router.push("/account/profile/", userStore.id);
   } catch (error) {
-    console.log(error);
     errors.value = error.response.data.errors;
   }
 };
@@ -124,7 +123,6 @@ const updateUser = async () => {
         <CroppedImage label="Cropped Image" :image="image" />
       </div>
     </div>
-    {{ image }}
     <div class="flex flex-wrap mt-4 mb-6">
       <div class="w-full md:w-1/2 px-3">
         <TextArea
