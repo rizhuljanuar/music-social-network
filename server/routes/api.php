@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('posts')->group(function () {
         Route::get('/', [\App\Http\Controllers\API\PostController::class, 'index']);
         Route::get('/{id}', [\App\Http\Controllers\API\PostController::class, 'show']);
-        Route::get('/{id}/{user_id}', [\App\Http\Controllers\API\PostByUserController::class, 'show']);
+        Route::get('/user/{user_id}', [\App\Http\Controllers\API\PostByUserController::class, 'show']);
         Route::post('/', [\App\Http\Controllers\API\PostController::class, 'store']);
         Route::put('/{id}', [\App\Http\Controllers\API\PostController::class, 'update']);
         Route::delete('/{id}', [\App\Http\Controllers\API\PostController::class, 'destroy']);

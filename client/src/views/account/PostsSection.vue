@@ -1,4 +1,35 @@
-<script setup></script>
+<script setup>
+import axios from "axios";
+import { ref, onMounted } from "vue";
+import { RouterLink } from "vue-router";
+import { usePostStore } from "../../store/post";
+import { useUserStore } from "../../store/user";
+
+import VPagination from "@hennge/vue3-pagination";
+import "@hennge/vue3-pagination/dist/vue3-pagination.css";
+
+const postStore = usePostStore();
+const userStore = useUserStore();
+
+let page = ref(1);
+let posts = ref(null);
+let pageCount = ref(null);
+
+onMounted(async () => {
+  await getPosts();
+});
+
+const getPosts = async () => {
+  try {
+    let res = await axios.get("api/posts?page=" + page.value);
+
+    pageCount.value = res.data.page_count;
+    posts.value = res.data.paginate.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+</script>
 
 <template>
   <div class="container mx-auto max-w-4xl py-6 px-3">
@@ -6,26 +37,40 @@
     <div class="bg-green-500 w-full h-1 mb-4"></div>
 
     <div class="mx-auto">
-      <div class="my-4">
+      <div v-for="post in posts" :key="post" class="my-4">
         <div class="flex items-center py-2">
-          <img
-            src="https://via.placeholder.com/50"
-            class="rounded-full"
-            width="50"
-          />
-          <div class="ml-2 font-bold text-3xl">Name Here</div>
+          <RouterLink :to="'/account/profile/' + post.user.id">
+            <img
+              :src="userStore.userImage(post.user.image)"
+              class="rounded-full"
+              width="50"
+          /></RouterLink>
+          <div class="ml-2 font-bold text-3xl">
+            <RouterLink :to="'/account/profile/' + post.user.id">
+              {{ post.user.first_name }} {{ post.user.last_name }}
+            </RouterLink>
+          </div>
         </div>
-        <img src="https://via.placeholder.com/1200x800" alt="" />
+        <img class="w-full" :src="postStore.postImage(post.image)" alt="" />
         <div class="p-4">
           <p class="text-3xl font-bold hover:text-gray-700 pb-4">
-            This is a title
+            {{ post.title }}
           </p>
-          <p class="py-2 text-lg">Event Location: London</p>
+          <p class="py-2 text-lg">{{ post.location }}</p>
           <p class="pb-6">
-            Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint
-            cillum sint consectetur cupidatat.
+            {{ post.description }}
           </p>
         </div>
+      </div>
+      <div class="flex items-center justify-center p-2">
+        <VPagination
+          class="p-10"
+          v-model="page"
+          :pages="pageCount"
+          :range-size="1"
+          active-color="#337aff"
+          @update:model-value="getPosts"
+        />
       </div>
     </div>
   </div>

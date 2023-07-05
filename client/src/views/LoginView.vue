@@ -3,9 +3,19 @@ import { ref } from "vue";
 import axios from "axios";
 import { RouterLink } from "vue-router";
 import { useUserStore } from "../store/user";
+import { useVideoStore } from "../store/video";
+import { useSongStore } from "../store/song";
+import { usePostStore } from "../store/post";
+import { useProfileStore } from "../store/profile";
+import { useRouter } from "vue-router";
 import TextInput from "../components/global/TextInput.vue";
 
 const userStore = useUserStore();
+const videoStore = useVideoStore();
+const songStore = useSongStore();
+const postStore = usePostStore();
+const profileStore = useProfileStore();
+const router = useRouter();
 
 let errors = ref([]);
 let email = ref(null);
@@ -18,7 +28,15 @@ const login = async () => {
       password: password.value,
     });
 
+    axios.defaults.headers.common["Authorization"] = "Bearer " + res.data.token;
     userStore.setUserDetails(res);
+
+    await profileStore.fetchProfileById(userStore.id);
+    await songStore.fetchSongsByUserId(userStore.id);
+    await postStore.fetchPostByUserId(userStore.id);
+    await videoStore.fetchVideoByUserId(userStore.id);
+
+    router.push("/account/profile/" + userStore.id);
   } catch (error) {
     errors.value = error.response.data.errors;
   }

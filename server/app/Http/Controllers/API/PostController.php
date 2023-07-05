@@ -90,7 +90,7 @@ class PostController extends Controller
 
             $post->save();
 
-            return new JsonResponse('Post with id',  $id . ' was updated!', 200);
+            return new JsonResponse('Post with id ' .  $id . ' was updated!', 200);
         } catch (\Exception $e) {
             return new JsonResponse([
                 'message' => 'Something went wrong PostController.update',

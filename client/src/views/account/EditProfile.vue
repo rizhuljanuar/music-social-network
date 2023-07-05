@@ -12,7 +12,6 @@ import CroppedImage from "../../components/global/CroppedImage.vue";
 
 const router = useRouter();
 const userStore = useUserStore();
-console.log(userStore.location);
 
 let firstName = ref(null);
 let lastName = ref(null);
@@ -59,7 +58,7 @@ const updateUser = async () => {
 
     await userStore.fetchUser();
 
-    router.push("/account/profile/", userStore.id);
+    router.push("/account/profile/" + userStore.id);
   } catch (error) {
     errors.value = error.response.data.errors;
   }

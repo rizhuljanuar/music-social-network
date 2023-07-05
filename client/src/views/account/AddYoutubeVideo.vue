@@ -1,6 +1,40 @@
 <script setup>
 import SubmitFormButton from "../../components/global/SubmitFormButton.vue";
 import TextInput from "../../components/global/TextInput.vue";
+import { useRouter } from "vue-router";
+import { useUserStore } from "../../store/user";
+import { ref } from "vue";
+import axios from "axios";
+import Swal from "sweetalert2";
+
+const router = useRouter();
+const userStore = useUserStore();
+
+let title = ref(null);
+let videoCode = ref(null);
+let errors = ref([]);
+
+const addYoutubeVideoLink = async () => {
+  errors.value = [];
+
+  try {
+    await axios.post("api/youtube", {
+      user_id: userStore.id,
+      title: title.value,
+      url: videoCode.value,
+    });
+
+    Swal.fire(
+      "New video added",
+      `You added a video with the name ${title.value}`,
+      "succes"
+    );
+
+    router.push("/account/profile");
+  } catch (error) {
+    errors.value = error.response.data.errors;
+  }
+};
 </script>
 
 <template>
@@ -14,7 +48,7 @@ import TextInput from "../../components/global/TextInput.vue";
       placeholder="Cool New Video"
       v-model:input="title"
       inputType="text"
-      error="This is a test error"
+      :error="errors.title ? errors.title[0] : ''"
     />
     <TextInput
       class="mb-2"
@@ -22,9 +56,9 @@ import TextInput from "../../components/global/TextInput.vue";
       placeholder="2VnYXKwneUQ"
       v-model:input="videoCode"
       inputType="text"
-      error="This is a test error"
+      :error="errors.url ? errors.url[0] : ''"
     />
 
-    <SubmitFormButton btnText="Add Song" />
+    <SubmitFormButton btnText="Add Song" @click="addYoutubeVideoLink" />
   </div>
 </template>

@@ -9,7 +9,7 @@ import FullScreenModal from "../structure/FullScreenModal.vue";
       class="container mx-auto max-w-4xl h-16 flex justify-between text-xs md:text-sm"
     >
       <div class="h-full flex items-center">
-        <RouterLink to="" class="flex justify-center items-center">
+        <RouterLink to="/" class="flex justify-center items-center">
           <div class="text-white text-2xl">MSN</div>
         </RouterLink>
       </div>
